@@ -48,7 +48,7 @@ class PageController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pageName = $page->getName();
-            $sitemapPath = $pageName;//."/sitemap.xml";
+            $sitemapPath = $pageName."/sitemap.xml";
             if (@fopen($sitemapPath,"r")) {
                 $xml = file_get_contents($sitemapPath);
                 $sitemapXML = new XMLReader();
@@ -99,12 +99,11 @@ class PageController extends Controller
                     $stopTime = microtime(true);
                     $responseTime = 0;
                     if (!$file) {
-                    $responseTime= -1;    
+                        $responseTime= -1;    
+                        fclose($file);
                     } else {
-                    
-                    $responseTime= ($stopTime-$startTime)*1000;
-                    
-                    fclose($file);
+                        $responseTime= ($stopTime-$startTime)*1000;
+                        fclose($file);
                     }
                     $url = new Url;
                     $url->setPage($page);

@@ -5,28 +5,38 @@
 
     <table>
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
+            
         </thead>
         <tbody>
         {% for page in pages %}
             <tr>
-                <td><a href="{{ path('page_show', { 'id': page.id }) }}">{{ page.id }}</a></td>
-                <td>{{ page.name }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('page_show', { 'id': page.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('page_edit', { 'id': page.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
+                <th>Page Name</th>
+                <th>Page Id</th>
+                <th>Page Actions</th>
             </tr>
+            <tr>
+                <td>{{ page.name }}</td>
+                <td><a href="{{ path('page_show', { 'id': page.id }) }}">{{ page.id }}</a></td>
+                
+                <td>
+                    <a href="{{ path('page_show', { 'id': page.id }) }}">show</a>
+                
+                    <a href="{{ path('page_edit', { 'id': page.id }) }}">edit</a>
+                    
+                </td>
+                
+            </tr>
+            
+                <th>URL  </th>
+                <th>ResponseTime  </th>
+            </tr>
+            
+            {% for url in page.urls %}
+            <tr>
+                    <td>{{ url.name }} </td><td>{{ url.responseTime }} </td>
+            </tr>
+            {% endfor %}
+            
         {% endfor %}
         </tbody>
     </table>

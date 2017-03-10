@@ -31,6 +31,7 @@ class Page
     
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Url", mappedBy="page")
+     * @ORM\OrderBy({"responseTime" = "DESC", "id" = "DESC"})
      */
     private $urls;
 

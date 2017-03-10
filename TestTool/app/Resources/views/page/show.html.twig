@@ -1,18 +1,32 @@
-{% extends 'base.html.twig' %}
 
+
+
+{% extends 'base.html.twig' %}
 {% block body %}
+
     <h1>Page</h1>
 
     <table>
         <tbody>
             <tr>
                 <th>Id</th>
-                <td>{{ page.id }}</td>
+                <th>Name</th>
+                
             </tr>
             <tr>
-                <th>Name</th>
+                
+                <td>{{ page.id }}</td>
                 <td>{{ page.name }}</td>
             </tr>
+            <tr>
+                <th>Name Url</th>
+                <th>Time response</th>
+            </tr>
+            {% for url in page.urls %}
+            <tr>
+                <td>{{ url.name }}</td><td>{{ url.responseTime }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
