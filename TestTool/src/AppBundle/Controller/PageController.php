@@ -49,21 +49,20 @@ class PageController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $pageName = $page->getName();
             $sitemapPath = $pageName."/sitemap.xml";
-            if (@fopen($sitemapPath,"r")) {
+            $sitemapPathResource = @fopen($sitemapPath,"r");
+            if ($sitemapPathResource) {
                 $xml = file_get_contents($sitemapPath);
                 $sitemapXML = new XMLReader();
                 $sitemapXML->xml($xml);
                 $xmlList = [];
+                $isXMLFile = 1;
                 while ($sitemapXML->read()) {
                     
                     if ($sitemapXML->name == 'loc' && $sitemapXML->readString()<>'') {
                         $fileName = $sitemapXML->readString();
                         if (!strpos($fileName,'.xml')) {
                             $isXMLFile = 0;
-                        } else {
-                            $isXMLFile = 1;
-                        }
-                        
+                        } 
                         $xmlList[] = $fileName;
                     }
                     
@@ -115,7 +114,7 @@ class PageController extends Controller
                     $em->flush($url);
                 }
 
-                
+                fclose($sitemapPathResource);
             } else {
                 die("file not exist".$sitemapPath);
             }
