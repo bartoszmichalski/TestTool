@@ -45,7 +45,6 @@ class PageController extends Controller
         $page = new Page();
         $form = $this->createForm('AppBundle\Form\PageType', $page);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $pageName = $page->getName();
             $sitemapPath = $pageName."/sitemap.xml";
@@ -57,7 +56,6 @@ class PageController extends Controller
                 $xmlList = [];
                 $isXMLFile = 1;
                 while ($sitemapXML->read()) {
-                    
                     if ($sitemapXML->name == 'loc' && $sitemapXML->readString()<>'') {
                         $fileName = $sitemapXML->readString();
                         if (!strpos($fileName,'.xml')) {
@@ -65,45 +63,41 @@ class PageController extends Controller
                         } 
                         $xmlList[] = $fileName;
                     }
-                    
                 }
                 if ($isXMLFile == 1) {
                     foreach ($xmlList as $xmls) {
                         if (@fopen($xmls,"r")) {
                             $xmlSite = file_get_contents($xmls);
-
                             $xmlFile = new XMLReader ();
                             $xmlFile->XML($xmlSite);
                             $wwwList = [];
                             while ($xmlFile->read()) {
                                 if ($xmlFile->name == 'loc' && $xmlFile->readString()<>'') {
-
-                                    $wwwList[]= $xmlFile->readString();
+                                    $wwwList[] = $xmlFile->readString();
                                 }
                             }
                         }
                     }
                 } else {
                     $wwwList = $xmlList;
-                    //die(var_dump($xmlList));
                 }
                 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($page);
                 $em->flush($page);
+                
                 foreach ($wwwList as $urlName) {
                     $startTime = microtime(true);
-                    //die($urlName);
+                
                     $file = @fopen($urlName, "r");//80, $errno, $errstr, 30);
                     $stopTime = microtime(true);
                     $responseTime = 0;
                     if (!$file) {
-                        $responseTime= -1;    
-                        fclose($file);
+                        $responseTime = -1;    
                     } else {
-                        $responseTime= ($stopTime-$startTime)*1000;
-                        fclose($file);
+                        $responseTime = ($stopTime-$startTime)*1000;
                     }
+                    fclose($file);
                     $url = new Url;
                     $url->setPage($page);
                     $url->setName($urlName);
@@ -116,9 +110,8 @@ class PageController extends Controller
 
                 fclose($sitemapPathResource);
             } else {
-                die("file not exist".$sitemapPath);
+                throw $this->createNotFoundException('File not found: '.$sitemapPath);
             }
-
             return $this->redirectToRoute('page_show', array('id' => $page->getId()));
         }
 
